@@ -738,147 +738,310 @@
 
         // Tab switching functionality
         function openTab(event, tabName) {
-            console.log('openTab called with:', tabName);
-            
-            const tabContents = document.getElementsByClassName('tab-content');
-            console.log('Found tab contents:', tabContents.length);
-            
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove('active');
-            }
+            try {
+                console.log('openTab called with:', tabName);
 
-            const tabButtons = document.getElementsByClassName('tab-button');
-            console.log('Found tab buttons:', tabButtons.length);
-            
-            for (let i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove('active');
-            }
+                // Validate input
+                if (!tabName || typeof tabName !== 'string') {
+                    throw new Error('Invalid tab name provided. Tab name must be a non-empty string.');
+                }
 
-            const targetTab = document.getElementById(tabName);
-            console.log('Target tab element:', targetTab);
-            
-            if (targetTab) {
-                targetTab.classList.add('active');
-            } else {
-                console.error('Tab not found:', tabName);
-            }
-            
-            if (event && event.currentTarget) {
-                event.currentTarget.classList.add('active');
+                const tabContents = document.getElementsByClassName('tab-content');
+                console.log('Found tab contents:', tabContents.length);
+
+                if (tabContents.length === 0) {
+                    throw new Error('No tab content elements found in the document.');
+                }
+
+                for (let i = 0; i < tabContents.length; i++) {
+                    tabContents[i].classList.remove('active');
+                }
+
+                const tabButtons = document.getElementsByClassName('tab-button');
+                console.log('Found tab buttons:', tabButtons.length);
+
+                if (tabButtons.length === 0) {
+                    console.warn('No tab button elements found in the document.');
+                }
+
+                for (let i = 0; i < tabButtons.length; i++) {
+                    tabButtons[i].classList.remove('active');
+                }
+
+                const targetTab = document.getElementById(tabName);
+                console.log('Target tab element:', targetTab);
+
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                } else {
+                    throw new Error(`Tab element with id "${tabName}" not found. Please check that the tab exists.`);
+                }
+
+                if (event && event.currentTarget) {
+                    event.currentTarget.classList.add('active');
+                } else {
+                    console.warn('No event or event.currentTarget provided to highlight active button.');
+                }
+            } catch (error) {
+                console.error('Error in openTab:', error.message);
+                // Show user-friendly error message
+                alert(`Unable to switch tabs: ${error.message}`);
             }
         }
 
         // Form submission handler with Mailchimp integration
         function handleSubmit(event, guideType) {
-            event.preventDefault();
-            
-            const form = event.target;
-            const name = form.querySelector('input[name="name"]').value.trim();
-            const email = form.querySelector('input[name="email"]').value.trim();
-            const phone = form.querySelector('input[name="phone"]').value.trim();
+            try {
+                event.preventDefault();
 
-            // Split name into first and last
-            const nameParts = name.split(' ');
-            const firstName = nameParts[0];
-            const lastName = nameParts.slice(1).join(' ') || '';
-
-            // Create hidden form to submit to Mailchimp
-            const mailchimpForm = document.createElement('form');
-            mailchimpForm.method = 'POST';
-            mailchimpForm.action = MAILCHIMP_URL;
-            
-            // Create hidden iframe to avoid page redirect
-            let iframe = document.getElementById('mc-iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'mc-iframe';
-                iframe.name = 'mc-iframe';
-                iframe.style.display = 'none';
-                iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin');
-                iframe.setAttribute('referrerpolicy', 'no-referrer');
-                document.body.appendChild(iframe);
-            }
-            mailchimpForm.target = 'mc-iframe';
-            
-            // Add Mailchimp required fields
-            const formData = {
-                'u': MAILCHIMP_U,
-                'id': MAILCHIMP_ID,
-                'EMAIL': email,
-                'FNAME': firstName,
-                'LNAME': lastName,
-                'PHONE': phone
-            };
-            
-            // Add anti-bot field (must be empty)
-            formData['b_' + MAILCHIMP_U + '_' + MAILCHIMP_ID] = '';
-
-            // Add all fields to form
-            for (let key in formData) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = formData[key];
-                mailchimpForm.appendChild(input);
-            }
-
-            // Add to DOM and submit
-            document.body.appendChild(mailchimpForm);
-            mailchimpForm.submit();
-            
-            // Clean up form after submission
-            setTimeout(() => {
-                if (mailchimpForm.parentNode) {
-                    document.body.removeChild(mailchimpForm);
+                // Validate guideType
+                if (!guideType || typeof guideType !== 'string') {
+                    throw new Error('Invalid guide type provided. Please try again or contact support.');
                 }
-            }, 1000);
 
-            // Save locally for backup
-            const localData = {
-                name: name,
-                email: email,
-                phone: phone,
-                guide: guideType,
-                timestamp: new Date().toISOString()
-            };
-            
-            const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-            leads.push(localData);
-            localStorage.setItem('leads', JSON.stringify(leads));
+                const validGuideTypes = ['selling', 'buying', 'inspection'];
+                if (!validGuideTypes.includes(guideType)) {
+                    throw new Error(`Invalid guide type "${guideType}". Expected one of: ${validGuideTypes.join(', ')}.`);
+                }
 
-            // Show success message
-            form.style.display = 'none';
-            document.getElementById(`${guideType}-success`).classList.add('show');
+                const form = event.target;
+                if (!form) {
+                    throw new Error('Form element not found. Please refresh the page and try again.');
+                }
 
-            // Scroll to success message
-            document.getElementById(`${guideType}-success`).scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
+                // Get form inputs with validation
+                const nameInput = form.querySelector('input[name="name"]');
+                const emailInput = form.querySelector('input[name="email"]');
+                const phoneInput = form.querySelector('input[name="phone"]');
 
-            console.log('Lead submitted to Mailchimp:', localData);
+                if (!nameInput || !emailInput || !phoneInput) {
+                    throw new Error('Required form fields are missing. Please refresh the page and try again.');
+                }
+
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const phone = phoneInput.value.trim();
+
+                // Validate field values
+                if (!name) {
+                    throw new Error('Please enter your name.');
+                }
+                if (name.length < 2) {
+                    throw new Error('Please enter a valid name (at least 2 characters).');
+                }
+                if (!email) {
+                    throw new Error('Please enter your email address.');
+                }
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    throw new Error('Please enter a valid email address.');
+                }
+                if (!phone) {
+                    throw new Error('Please enter your phone number.');
+                }
+
+                // Split name into first and last
+                const nameParts = name.split(' ');
+                const firstName = nameParts[0];
+                const lastName = nameParts.slice(1).join(' ') || '';
+
+                // Create hidden form to submit to Mailchimp
+                const mailchimpForm = document.createElement('form');
+                if (!mailchimpForm) {
+                    throw new Error('Unable to create submission form. Please try again.');
+                }
+                mailchimpForm.method = 'POST';
+                mailchimpForm.action = MAILCHIMP_URL;
+
+                // Create hidden iframe to avoid page redirect
+                let iframe = document.getElementById('mc-iframe');
+                if (!iframe) {
+                    try {
+                        iframe = document.createElement('iframe');
+                        iframe.id = 'mc-iframe';
+                        iframe.name = 'mc-iframe';
+                        iframe.style.display = 'none';
+                        iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin');
+                        iframe.setAttribute('referrerpolicy', 'no-referrer');
+                        document.body.appendChild(iframe);
+                    } catch (iframeError) {
+                        console.error('Error creating iframe:', iframeError);
+                        throw new Error('Unable to prepare form submission. Please try again.');
+                    }
+                }
+                mailchimpForm.target = 'mc-iframe';
+
+                // Add Mailchimp required fields
+                const formData = {
+                    'u': MAILCHIMP_U,
+                    'id': MAILCHIMP_ID,
+                    'EMAIL': email,
+                    'FNAME': firstName,
+                    'LNAME': lastName,
+                    'PHONE': phone
+                };
+
+                // Add anti-bot field (must be empty)
+                formData['b_' + MAILCHIMP_U + '_' + MAILCHIMP_ID] = '';
+
+                // Add all fields to form
+                for (let key in formData) {
+                    try {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = formData[key];
+                        mailchimpForm.appendChild(input);
+                    } catch (inputError) {
+                        console.error('Error creating form input:', inputError);
+                        throw new Error('Error preparing form data. Please try again.');
+                    }
+                }
+
+                // Add to DOM and submit
+                try {
+                    document.body.appendChild(mailchimpForm);
+                    mailchimpForm.submit();
+                } catch (submitError) {
+                    console.error('Error submitting form:', submitError);
+                    throw new Error('Unable to submit form. Please check your internet connection and try again.');
+                }
+
+                // Clean up form after submission
+                setTimeout(() => {
+                    try {
+                        if (mailchimpForm.parentNode) {
+                            document.body.removeChild(mailchimpForm);
+                        }
+                    } catch (cleanupError) {
+                        console.error('Error cleaning up form:', cleanupError);
+                        // Non-critical error, don't throw
+                    }
+                }, 1000);
+
+                // Save locally for backup
+                try {
+                    const localData = {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        guide: guideType,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    const leadsJson = localStorage.getItem('leads') || '[]';
+                    let leads = [];
+                    try {
+                        leads = JSON.parse(leadsJson);
+                        if (!Array.isArray(leads)) {
+                            console.warn('Leads data is not an array, resetting to empty array');
+                            leads = [];
+                        }
+                    } catch (parseError) {
+                        console.error('Error parsing leads from localStorage:', parseError);
+                        leads = [];
+                    }
+
+                    leads.push(localData);
+                    localStorage.setItem('leads', JSON.stringify(leads));
+                    console.log('Lead saved locally:', localData);
+                } catch (storageError) {
+                    console.error('Error saving to localStorage:', storageError);
+                    console.warn('Form submitted successfully but local backup failed. This does not affect your submission.');
+                }
+
+                // Show success message
+                try {
+                    form.style.display = 'none';
+                    const successElement = document.getElementById(`${guideType}-success`);
+                    if (!successElement) {
+                        throw new Error('Success message element not found.');
+                    }
+                    successElement.classList.add('show');
+
+                    // Scroll to success message
+                    successElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                } catch (displayError) {
+                    console.error('Error displaying success message:', displayError);
+                    // Show fallback alert
+                    alert('Thank you! Your guide has been sent to your email. Please check your inbox.');
+                }
+
+                console.log('Lead submitted successfully to Mailchimp');
+            } catch (error) {
+                console.error('Error in handleSubmit:', error.message);
+                // Show user-friendly error message
+                alert(`Error submitting form: ${error.message}`);
+            }
         }
 
         // PDF download functionality
         function downloadPDF(guideType) {
-            const pdfFiles = {
-                'selling': 'selling_guide.pdf',
-                'buying': 'buying_guide.pdf',
-                'inspection': 'inspection_guide.pdf'
-            };
+            try {
+                // Validate guideType
+                if (!guideType || typeof guideType !== 'string') {
+                    throw new Error('Invalid guide type provided. Unable to download PDF.');
+                }
 
-            const filename = pdfFiles[guideType];
-            
-            const link = document.createElement('a');
-            link.href = filename;
-            link.download = filename;
-            link.rel = 'noopener noreferrer';
-            link.referrerPolicy = 'no-referrer';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+                const pdfFiles = {
+                    'selling': 'selling_guide.pdf',
+                    'buying': 'buying_guide.pdf',
+                    'inspection': 'inspection_guide.pdf'
+                };
 
-            console.log(`PDF Downloaded: ${guideType}`);
+                const filename = pdfFiles[guideType];
+
+                if (!filename) {
+                    throw new Error(`PDF not found for guide type "${guideType}". Please contact support for assistance.`);
+                }
+
+                // Create download link
+                let link;
+                try {
+                    link = document.createElement('a');
+                    if (!link) {
+                        throw new Error('Unable to create download link.');
+                    }
+                    link.href = filename;
+                    link.download = filename;
+                    link.rel = 'noopener noreferrer';
+                    link.referrerPolicy = 'no-referrer';
+                } catch (linkError) {
+                    console.error('Error creating download link:', linkError);
+                    throw new Error('Unable to prepare download. Please try again.');
+                }
+
+                // Append, click, and remove link
+                try {
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up
+                    setTimeout(() => {
+                        try {
+                            if (link.parentNode) {
+                                document.body.removeChild(link);
+                            }
+                        } catch (cleanupError) {
+                            console.error('Error cleaning up download link:', cleanupError);
+                            // Non-critical error
+                        }
+                    }, 100);
+                } catch (downloadError) {
+                    console.error('Error triggering download:', downloadError);
+                    throw new Error('Unable to start download. Please check if the file exists and try again.');
+                }
+
+                console.log(`PDF Downloaded: ${guideType} (${filename})`);
+            } catch (error) {
+                console.error('Error in downloadPDF:', error.message);
+                // Show user-friendly error message
+                alert(`Error downloading PDF: ${error.message}`);
+            }
         }
     </script>
 </body>
