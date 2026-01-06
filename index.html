@@ -730,8 +730,11 @@
     </footer>
 
     <script>
-        // Version 2.0 - Mailchimp Integration Fixed
-        // Mailchimp Configuration
+        // Version 3.0 - n8n Webhook Integration
+        // n8n Webhook Configuration
+        const N8N_WEBHOOK_URL = 'YOUR_N8N_WEBHOOK_URL_HERE'; // Replace with your n8n webhook URL
+
+        // Legacy Mailchimp Configuration (backup)
         const MAILCHIMP_URL = 'https://gmail.us14.list-manage.com/subscribe/post';
         const MAILCHIMP_U = 'a3a65ca8956d7fde45484e581';
         const MAILCHIMP_ID = '1763dbb742';
@@ -789,8 +792,8 @@
             }
         }
 
-        // Form submission handler with Mailchimp integration
-        function handleSubmit(event, guideType) {
+        // Form submission handler with n8n webhook integration
+        async function handleSubmit(event, guideType) {
             try {
                 event.preventDefault();
 
@@ -841,95 +844,46 @@
                     throw new Error('Please enter your phone number.');
                 }
 
-                // Split name into first and last
-                const nameParts = name.split(' ');
-                const firstName = nameParts[0];
-                const lastName = nameParts.slice(1).join(' ') || '';
-
-                // Create hidden form to submit to Mailchimp
-                const mailchimpForm = document.createElement('form');
-                if (!mailchimpForm) {
-                    throw new Error('Unable to create submission form. Please try again.');
-                }
-                mailchimpForm.method = 'POST';
-                mailchimpForm.action = MAILCHIMP_URL;
-
-                // Create hidden iframe to avoid page redirect
-                let iframe = document.getElementById('mc-iframe');
-                if (!iframe) {
-                    try {
-                        iframe = document.createElement('iframe');
-                        iframe.id = 'mc-iframe';
-                        iframe.name = 'mc-iframe';
-                        iframe.style.display = 'none';
-                        iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin');
-                        iframe.setAttribute('referrerpolicy', 'no-referrer');
-                        document.body.appendChild(iframe);
-                    } catch (iframeError) {
-                        console.error('Error creating iframe:', iframeError);
-                        throw new Error('Unable to prepare form submission. Please try again.');
-                    }
-                }
-                mailchimpForm.target = 'mc-iframe';
-
-                // Add Mailchimp required fields
-                const formData = {
-                    'u': MAILCHIMP_U,
-                    'id': MAILCHIMP_ID,
-                    'EMAIL': email,
-                    'FNAME': firstName,
-                    'LNAME': lastName,
-                    'PHONE': phone
+                // Prepare data for n8n webhook
+                const leadData = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    guideType: guideType,
+                    timestamp: new Date().toISOString(),
+                    source: 'website'
                 };
 
-                // Add anti-bot field (must be empty)
-                formData['b_' + MAILCHIMP_U + '_' + MAILCHIMP_ID] = '';
-
-                // Add all fields to form
-                for (let key in formData) {
-                    try {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = key;
-                        input.value = formData[key];
-                        mailchimpForm.appendChild(input);
-                    } catch (inputError) {
-                        console.error('Error creating form input:', inputError);
-                        throw new Error('Error preparing form data. Please try again.');
-                    }
-                }
-
-                // Add to DOM and submit
+                // Send to n8n webhook
                 try {
-                    document.body.appendChild(mailchimpForm);
-                    mailchimpForm.submit();
-                } catch (submitError) {
-                    console.error('Error submitting form:', submitError);
-                    throw new Error('Unable to submit form. Please check your internet connection and try again.');
-                }
+                    const response = await fetch(N8N_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(leadData)
+                    });
 
-                // Clean up form after submission
-                setTimeout(() => {
-                    try {
-                        if (mailchimpForm.parentNode) {
-                            document.body.removeChild(mailchimpForm);
-                        }
-                    } catch (cleanupError) {
-                        console.error('Error cleaning up form:', cleanupError);
-                        // Non-critical error, don't throw
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
                     }
-                }, 1000);
+
+                    const result = await response.json();
+                    console.log('n8n webhook response:', result);
+
+                    if (!result.success) {
+                        throw new Error(result.error || 'Submission failed. Please try again.');
+                    }
+                } catch (fetchError) {
+                    console.error('Error sending to n8n:', fetchError);
+
+                    // Fallback to Mailchimp if n8n fails
+                    console.warn('Falling back to direct Mailchimp submission...');
+                    await submitToMailchimpFallback(name, email, phone);
+                }
 
                 // Save locally for backup
                 try {
-                    const localData = {
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        guide: guideType,
-                        timestamp: new Date().toISOString()
-                    };
-
                     const leadsJson = localStorage.getItem('leads') || '[]';
                     let leads = [];
                     try {
@@ -943,12 +897,12 @@
                         leads = [];
                     }
 
-                    leads.push(localData);
+                    leads.push(leadData);
                     localStorage.setItem('leads', JSON.stringify(leads));
-                    console.log('Lead saved locally:', localData);
+                    console.log('Lead saved locally:', leadData);
                 } catch (storageError) {
                     console.error('Error saving to localStorage:', storageError);
-                    console.warn('Form submitted successfully but local backup failed. This does not affect your submission.');
+                    console.warn('Form submitted successfully but local backup failed.');
                 }
 
                 // Show success message
@@ -971,12 +925,71 @@
                     alert('Thank you! Your guide has been sent to your email. Please check your inbox.');
                 }
 
-                console.log('Lead submitted successfully to Mailchimp');
+                console.log('Lead submitted successfully');
             } catch (error) {
                 console.error('Error in handleSubmit:', error.message);
                 // Show user-friendly error message
                 alert(`Error submitting form: ${error.message}`);
             }
+        }
+
+        // Fallback function to submit directly to Mailchimp if n8n fails
+        function submitToMailchimpFallback(name, email, phone) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const nameParts = name.split(' ');
+                    const firstName = nameParts[0];
+                    const lastName = nameParts.slice(1).join(' ') || '';
+
+                    // Create hidden form to submit to Mailchimp
+                    const mailchimpForm = document.createElement('form');
+                    mailchimpForm.method = 'POST';
+                    mailchimpForm.action = MAILCHIMP_URL;
+
+                    // Create hidden iframe
+                    let iframe = document.getElementById('mc-iframe');
+                    if (!iframe) {
+                        iframe = document.createElement('iframe');
+                        iframe.id = 'mc-iframe';
+                        iframe.name = 'mc-iframe';
+                        iframe.style.display = 'none';
+                        document.body.appendChild(iframe);
+                    }
+                    mailchimpForm.target = 'mc-iframe';
+
+                    // Add Mailchimp fields
+                    const formData = {
+                        'u': MAILCHIMP_U,
+                        'id': MAILCHIMP_ID,
+                        'EMAIL': email,
+                        'FNAME': firstName,
+                        'LNAME': lastName,
+                        'PHONE': phone,
+                        ['b_' + MAILCHIMP_U + '_' + MAILCHIMP_ID]: ''
+                    };
+
+                    for (let key in formData) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = formData[key];
+                        mailchimpForm.appendChild(input);
+                    }
+
+                    document.body.appendChild(mailchimpForm);
+                    mailchimpForm.submit();
+
+                    setTimeout(() => {
+                        if (mailchimpForm.parentNode) {
+                            document.body.removeChild(mailchimpForm);
+                        }
+                        resolve();
+                    }, 1000);
+                } catch (error) {
+                    console.error('Mailchimp fallback error:', error);
+                    reject(error);
+                }
+            });
         }
 
         // PDF download functionality
