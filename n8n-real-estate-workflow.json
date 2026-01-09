@@ -8,12 +8,14 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "webhook-node",
+      "id": "1",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [240, 300],
-      "webhookId": "real-estate-webhook"
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -34,61 +36,66 @@
           ]
         }
       },
-      "id": "validate-node",
+      "id": "2",
       "name": "Validate",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [460, 300]
+      "position": [
+        460,
+        300
+      ]
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "first",
+              "id": "a1",
               "name": "firstName",
               "value": "={{$json.name.split(' ')[0]}}",
               "type": "string"
             },
             {
-              "id": "last",
+              "id": "a2",
               "name": "lastName",
               "value": "={{$json.name.split(' ').slice(1).join(' ')}}",
               "type": "string"
             },
             {
-              "id": "mail",
+              "id": "a3",
               "name": "email",
               "value": "={{$json.email}}",
               "type": "string"
             },
             {
-              "id": "tel",
+              "id": "a4",
               "name": "phone",
               "value": "={{$json.phone}}",
               "type": "string"
             },
             {
-              "id": "guide",
+              "id": "a5",
               "name": "guideType",
               "value": "={{$json.guideType}}",
               "type": "string"
             },
             {
-              "id": "time",
+              "id": "a6",
               "name": "timestamp",
               "value": "={{$now.toISO()}}",
               "type": "string"
             }
           ]
-        },
-        "options": {}
+        }
       },
-      "id": "format-node",
+      "id": "3",
       "name": "Format",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [680, 200]
+      "position": [
+        680,
+        200
+      ]
     },
     {
       "parameters": {
@@ -117,48 +124,40 @@
               }
             ]
           }
-        },
-        "options": {}
+        }
       },
-      "id": "mailchimp-node",
+      "id": "4",
       "name": "Mailchimp",
       "type": "n8n-nodes-base.mailchimp",
       "typeVersion": 2,
-      "position": [900, 80],
-      "credentials": {
-        "mailchimpApi": {
-          "id": "YOUR_MAILCHIMP_CREDENTIAL_ID",
-          "name": "Mailchimp"
-        }
-      }
+      "position": [
+        900,
+        80
+      ]
     },
     {
       "parameters": {
         "fromEmail": "harchi.isaak@gmail.com",
         "toEmail": "={{$json.email}}",
-        "subject": "Welcome! Your {{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide is Ready",
+        "subject": "Welcome! Your {{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide",
         "emailType": "html",
-        "message": "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }\n    .container { max-width: 600px; margin: 0 auto; padding: 0; }\n    .header { background: linear-gradient(135deg, #1e3a5f 0%, #0d1f3c 100%); color: white; padding: 40px 20px; text-align: center; }\n    .header h1 { margin: 0; font-size: 28px; }\n    .content { background: #ffffff; padding: 40px 30px; }\n    .content p { margin: 0 0 15px 0; font-size: 16px; }\n    .button { display: inline-block; padding: 15px 35px; background: #d4af37; color: white !important; text-decoration: none; border-radius: 5px; margin: 25px 0; font-weight: bold; font-size: 16px; }\n    .button:hover { background: #c19b2b; }\n    .footer { background: #f8f9fa; padding: 30px 20px; text-align: center; font-size: 13px; color: #666; }\n    h3 { color: #1e3a5f; margin: 25px 0 15px 0; font-size: 20px; }\n    ul { padding-left: 20px; }\n    ul li { margin: 10px 0; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>Welcome, {{$json.firstName}}!</h1>\n    </div>\n    <div class=\"content\">\n      <p>Hi {{$json.firstName}},</p>\n      \n      <p>Thank you for requesting the <strong>{{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide</strong>! I'm excited to help you on your real estate journey.</p>\n      \n      <p>I understand that real estate can feel overwhelming, but you're not alone. I'm here to guide you every step of the way.</p>\n      \n      <div style=\"text-align: center;\">\n        <a href=\"https://iharchi.github.io/{{$json.guideType}}_guide.pdf\" class=\"button\">📥 Download Your Guide</a>\n      </div>\n      \n      <h3>What's Next?</h3>\n      <ul>\n        <li>Review your guide at your own pace</li>\n        <li>Jot down any questions that come up</li>\n        <li>Reach out anytime - I'm here to help!</li>\n      </ul>\n      \n      <p><strong>Have questions or ready to get started?</strong></p>\n      <p>📞 Call/Text: <a href=\"tel:6128002025\" style=\"color: #1e3a5f;\">(612) 800-2025</a><br>\n      📧 Email: <a href=\"mailto:harchi.isaak@gmail.com\" style=\"color: #1e3a5f;\">harchi.isaak@gmail.com</a></p>\n      \n      <p style=\"margin-top: 20px;\">I typically respond within 2 hours, 7 days a week. Your peace of mind is my priority.</p>\n      \n      <p style=\"margin-top: 25px;\">Looking forward to helping you achieve your real estate goals!</p>\n      \n      <p style=\"margin-top: 30px;\">Warmly,<br>\n      <strong>Isaak Harchi</strong><br>\n      <span style=\"color: #666;\">Licensed Real Estate Agent</span></p>\n    </div>\n    <div class=\"footer\">\n      <p><strong>© 2025 Isaak Harchi Real Estate</strong></p>\n      <p>Minneapolis & St. Paul, Minnesota</p>\n      <p style=\"margin-top: 15px; font-size: 12px;\">Your information is secure and will never be shared.</p>\n    </div>\n  </div>\n</body>\n</html>",
-        "options": {}
+        "message": "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }\n    .container { max-width: 600px; margin: 0 auto; }\n    .header { background: linear-gradient(135deg, #1e3a5f 0%, #0d1f3c 100%); color: white; padding: 40px 20px; text-align: center; }\n    .content { background: #ffffff; padding: 40px 30px; }\n    .button { display: inline-block; padding: 15px 35px; background: #d4af37; color: white !important; text-decoration: none; border-radius: 5px; margin: 25px 0; font-weight: bold; }\n    .footer { background: #f8f9fa; padding: 30px 20px; text-align: center; font-size: 13px; color: #666; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\"><h1>Welcome, {{$json.firstName}}!</h1></div>\n    <div class=\"content\">\n      <p>Hi {{$json.firstName}},</p>\n      <p>Thank you for requesting the <strong>{{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide</strong>!</p>\n      <div style=\"text-align: center;\"><a href=\"https://iharchi.github.io/{{$json.guideType}}_guide.pdf\" class=\"button\">📥 Download Your Guide</a></div>\n      <p>📞 Call/Text: (612) 800-2025<br>📧 Email: harchi.isaak@gmail.com</p>\n      <p>Looking forward to helping you!</p>\n      <p>Warmly,<br><strong>Isaak Harchi</strong></p>\n    </div>\n    <div class=\"footer\"><p>© 2025 Isaak Harchi Real Estate</p></div>\n  </div>\n</body>\n</html>"
       },
-      "id": "email-node",
+      "id": "5",
       "name": "Send Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
-      "position": [900, 300],
-      "credentials": {
-        "smtp": {
-          "id": "YOUR_SMTP_CREDENTIAL_ID",
-          "name": "Gmail SMTP"
-        }
-      }
+      "position": [
+        900,
+        300
+      ]
     },
     {
       "parameters": {
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_GOOGLE_SHEET_ID",
+          "value": "YOUR_SHEET_ID",
           "mode": "id"
         },
         "sheetName": {
@@ -174,48 +173,50 @@
             "Last Name": "={{$json.lastName}}",
             "Email": "={{$json.email}}",
             "Phone": "={{$json.phone}}",
-            "Guide Type": "={{$json.guideType}}",
-            "Status": "New Lead"
+            "Guide": "={{$json.guideType}}",
+            "Status": "New"
           }
-        },
-        "options": {}
+        }
       },
-      "id": "sheets-node",
+      "id": "6",
       "name": "Google Sheets",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.4,
-      "position": [900, 520],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YOUR_GOOGLE_CREDENTIAL_ID",
-          "name": "Google Sheets"
-        }
-      }
+      "position": [
+        900,
+        520
+      ]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"success\": true, \"message\": \"Thank you! Check your email for the guide.\", \"guideType\": $json.guideType } }}"
+        "responseBody": "={{ { \"success\": true, \"message\": \"Thank you!\", \"guideType\": $json.guideType } }}"
       },
-      "id": "success-node",
+      "id": "7",
       "name": "Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1120, 300]
+      "position": [
+        1120,
+        300
+      ]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"success\": false, \"error\": \"Invalid form data. Please try again.\" } }}",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Invalid data\" } }}",
         "options": {
           "responseCode": 400
         }
       },
-      "id": "error-node",
+      "id": "8",
       "name": "Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [680, 420]
+      "position": [
+        680,
+        420
+      ]
     }
   ],
   "connections": {
@@ -303,13 +304,8 @@
       ]
     }
   },
-  "settings": {
-    "executionOrder": "v1"
-  },
+  "settings": {},
   "staticData": null,
   "tags": [],
-  "pinData": {},
-  "triggerCount": 0,
-  "updatedAt": "2026-01-09T19:30:00.000Z",
-  "versionId": "1"
+  "pinData": {}
 }
