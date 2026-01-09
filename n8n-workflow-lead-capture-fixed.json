@@ -1,0 +1,244 @@
+{
+  "name": "Real Estate Lead Capture & Welcome Email",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "real-estate-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - Form Submission",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "real-estate-lead-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.guideType}}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.email}}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.name}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "validate-data",
+      "name": "Validate Form Data",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "firstName",
+              "value": "={{$json.name.split(' ')[0]}}"
+            },
+            {
+              "name": "lastName",
+              "value": "={{$json.name.split(' ').slice(1).join(' ')}}"
+            },
+            {
+              "name": "email",
+              "value": "={{$json.email}}"
+            },
+            {
+              "name": "phone",
+              "value": "={{$json.phone}}"
+            },
+            {
+              "name": "guideType",
+              "value": "={{$json.guideType}}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$now.toISO()}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-data",
+      "name": "Format Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "member",
+        "operation": "upsert",
+        "list": "YOUR_MAILCHIMP_LIST_ID",
+        "email": "={{$json.email}}",
+        "status": "subscribed",
+        "additionalFields": {
+          "mergeFields": {
+            "customFieldsUi": [
+              {
+                "name": "FNAME",
+                "value": "={{$json.firstName}}"
+              },
+              {
+                "name": "LNAME",
+                "value": "={{$json.lastName}}"
+              },
+              {
+                "name": "PHONE",
+                "value": "={{$json.phone}}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "mailchimp-subscribe",
+      "name": "Subscribe to Mailchimp",
+      "type": "n8n-nodes-base.mailchimp",
+      "typeVersion": 2,
+      "position": [850, 100],
+      "credentials": {
+        "mailchimpApi": {
+          "id": "YOUR_MAILCHIMP_CREDENTIAL_ID",
+          "name": "Mailchimp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "harchi.isaak@gmail.com",
+        "toEmail": "={{$json.email}}",
+        "subject": "Welcome! Here's Your {{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide",
+        "emailType": "html",
+        "message": "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background: linear-gradient(135deg, #1e3a5f 0%, #0d1f3c 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }\n    .content { background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; }\n    .button { display: inline-block; padding: 15px 30px; background: #d4af37; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }\n    .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>Welcome, {{$json.firstName}}!</h1>\n    </div>\n    <div class=\"content\">\n      <p>Hi {{$json.firstName}},</p>\n      \n      <p>Thank you so much for requesting the <strong>{{$json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1)}} Guide</strong>! I'm thrilled to help you on your real estate journey.</p>\n      \n      <p>I understand that real estate can feel overwhelming, but you're not alone. I'm here to guide you every step of the way.</p>\n      \n      <div style=\"text-align: center;\">\n        <a href=\"https://iharchi.github.io/{{$json.guideType}}_guide.pdf\" class=\"button\">📥 Download Your Guide</a>\n      </div>\n      \n      <h3>What's Next?</h3>\n      <ul>\n        <li>Review your guide at your own pace</li>\n        <li>Jot down any questions that come up</li>\n        <li>Reach out anytime - I'm here to help!</li>\n      </ul>\n      \n      <p><strong>Have questions or ready to get started?</strong></p>\n      <p>📞 Call/Text: <a href=\"tel:6128002025\">(612) 800-2025</a><br>\n      📧 Email: <a href=\"mailto:harchi.isaak@gmail.com\">harchi.isaak@gmail.com</a></p>\n      \n      <p>I typically respond within 2 hours, 7 days a week. Your peace of mind is my priority.</p>\n      \n      <p>Looking forward to helping you achieve your real estate goals!</p>\n      \n      <p>Warmly,<br>\n      <strong>Isaak Harchi</strong><br>\n      Licensed Real Estate Agent</p>\n    </div>\n    <div class=\"footer\">\n      <p>© 2025 Isaak Harchi Real Estate. All rights reserved.</p>\n      <p>Minneapolis & St. Paul, Minnesota</p>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "send-welcome-email",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [850, 300],
+      "credentials": {
+        "smtp": {
+          "id": "YOUR_SMTP_CREDENTIAL_ID",
+          "name": "Gmail SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Thank you! Check your email for the guide.\", \"guideType\": $json.guideType } }}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Invalid form data. Please try again.\" } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Webhook - Form Submission": {
+      "main": [
+        [
+          {
+            "node": "Validate Form Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Form Data": {
+      "main": [
+        [
+          {
+            "node": "Format Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Subscribe to Mailchimp",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subscribe to Mailchimp": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-01-09T03:30:00.000Z",
+  "versionId": "2"
+}
