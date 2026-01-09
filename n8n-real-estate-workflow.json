@@ -8,11 +8,14 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "webhook-node",
+      "id": "8b0d6c3e-1a2f-4e9d-b5c7-3f8a9d1e2b4c",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [250, 300],
+      "position": [
+        240,
+        300
+      ],
       "webhookId": "real-estate-lead"
     },
     {
@@ -34,48 +37,51 @@
           ]
         }
       },
-      "id": "validate-node",
+      "id": "7c9d5e2f-3b1a-4f8e-a6d9-2e7b8c3f1a5d",
       "name": "Validate",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        460,
+        300
+      ]
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "firstName",
+              "id": "a1b2c3d4",
               "name": "firstName",
               "value": "={{ $json.name.split(' ')[0] }}",
               "type": "string"
             },
             {
-              "id": "lastName",
+              "id": "b2c3d4e5",
               "name": "lastName",
               "value": "={{ $json.name.split(' ').slice(1).join(' ') }}",
               "type": "string"
             },
             {
-              "id": "email",
+              "id": "c3d4e5f6",
               "name": "email",
               "value": "={{ $json.email }}",
               "type": "string"
             },
             {
-              "id": "phone",
+              "id": "d4e5f6g7",
               "name": "phone",
               "value": "={{ $json.phone }}",
               "type": "string"
             },
             {
-              "id": "guideType",
+              "id": "e5f6g7h8",
               "name": "guideType",
               "value": "={{ $json.guideType }}",
               "type": "string"
             },
             {
-              "id": "timestamp",
+              "id": "f6g7h8i9",
               "name": "timestamp",
               "value": "={{ $now.toISO() }}",
               "type": "string"
@@ -83,11 +89,14 @@
           ]
         }
       },
-      "id": "format-node",
+      "id": "6d8e4f1a-2c9b-4e7d-b3a8-1f5c6e2d9b3a",
       "name": "Format Data",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [650, 200]
+      "position": [
+        680,
+        200
+      ]
     },
     {
       "parameters": {
@@ -118,11 +127,20 @@
           }
         }
       },
-      "id": "mailchimp-node",
+      "id": "5e7f3a2b-1d8c-4f9e-a5b7-3e6d8f1c2a4b",
       "name": "Mailchimp",
       "type": "n8n-nodes-base.mailchimp",
       "typeVersion": 2,
-      "position": [850, 100]
+      "position": [
+        900,
+        80
+      ],
+      "credentials": {
+        "mailchimpApi": {
+          "id": "MAILCHIMP_CREDENTIAL_ID",
+          "name": "Mailchimp account"
+        }
+      }
     },
     {
       "parameters": {
@@ -132,11 +150,20 @@
         "emailType": "html",
         "message": "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }\n    .container { max-width: 600px; margin: 0 auto; }\n    .header { background: linear-gradient(135deg, #1e3a5f 0%, #0d1f3c 100%); color: white; padding: 40px 20px; text-align: center; }\n    .content { background: #ffffff; padding: 40px 30px; }\n    .button { display: inline-block; padding: 15px 35px; background: #d4af37; color: white !important; text-decoration: none; border-radius: 5px; margin: 25px 0; font-weight: bold; }\n    .footer { background: #f8f9fa; padding: 30px 20px; text-align: center; font-size: 13px; color: #666; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\"><h1>Welcome, {{ $json.firstName }}!</h1></div>\n    <div class=\"content\">\n      <p>Hi {{ $json.firstName }},</p>\n      <p>Thank you for requesting the <strong>{{ $json.guideType.charAt(0).toUpperCase() + $json.guideType.slice(1) }} Guide</strong>!</p>\n      <div style=\"text-align: center;\"><a href=\"https://iharchi.github.io/{{ $json.guideType }}_guide.pdf\" class=\"button\">📥 Download Your Guide</a></div>\n      <p>📞 Call/Text: (612) 800-2025<br>📧 Email: harchi.isaak@gmail.com</p>\n      <p>Looking forward to helping you!</p>\n      <p>Warmly,<br><strong>Isaak Harchi</strong></p>\n    </div>\n    <div class=\"footer\"><p>© 2025 Isaak Harchi Real Estate</p></div>\n  </div>\n</body>\n</html>"
       },
-      "id": "email-node",
+      "id": "4f6a2e1c-9d7b-4e3a-b8c5-2f9e7d3a1b6c",
       "name": "Send Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
-      "position": [850, 250]
+      "position": [
+        900,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "Gmail SMTP"
+        }
+      }
     },
     {
       "parameters": {
@@ -165,11 +192,20 @@
         },
         "options": {}
       },
-      "id": "sheets-node",
+      "id": "3e5d1f9a-8c6b-4f2e-a7d9-1e8c5f2b3a7d",
       "name": "Google Sheets",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.4,
-      "position": [850, 400]
+      "position": [
+        900,
+        520
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
     },
     {
       "parameters": {
@@ -177,11 +213,14 @@
         "responseBody": "={{ { \"success\": true, \"message\": \"Thank you! Check your email for the guide.\", \"guideType\": $json.guideType } }}",
         "options": {}
       },
-      "id": "success-node",
+      "id": "2d4c8e6f-7b9a-4f1e-b3d8-9e5c7f1a2b8d",
       "name": "Success Response",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1050, 250]
+      "position": [
+        1120,
+        300
+      ]
     },
     {
       "parameters": {
@@ -191,11 +230,14 @@
           "responseCode": 400
         }
       },
-      "id": "error-node",
+      "id": "1c3b7d5e-6a8c-4f9e-a2d7-8e4c6f9b1a3d",
       "name": "Error Response",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [650, 450]
+      "position": [
+        680,
+        420
+      ]
     }
   ],
   "connections": {
@@ -288,6 +330,5 @@
   },
   "staticData": null,
   "tags": [],
-  "pinData": {},
-  "versionId": "1"
+  "pinData": {}
 }
