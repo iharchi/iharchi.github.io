@@ -841,22 +841,17 @@
                 guide: guideType,
                 timestamp: new Date().toISOString()
             };
-            
+
             const leads = JSON.parse(localStorage.getItem('leads') || '[]');
             leads.push(localData);
             localStorage.setItem('leads', JSON.stringify(leads));
 
-            // Show success message
-            form.style.display = 'none';
-            document.getElementById(`${guideType}-success`).classList.add('show');
-
-            // Scroll to success message
-            document.getElementById(`${guideType}-success`).scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-
             console.log('Lead submitted to Mailchimp:', localData);
+
+            // Redirect to confirmation page after brief delay to ensure Mailchimp submission
+            setTimeout(() => {
+                window.location.href = `confirmation.html?guide=${guideType}`;
+            }, 500);
         }
 
         // PDF download functionality
