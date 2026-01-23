@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Thank You - Guide Download | Isaak Harchi Real Estate</title>
+    <meta name="description" content="Thank you for downloading your free real estate guide. Your guide is ready to download.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Google Ads Conversion Tracking -->
+    <!-- Add your Google Ads conversion tracking code here -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d1f3c 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 3rem;
+            text-align: center;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: scaleIn 0.5s ease 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confirmation-card h2 {
+            font-size: 2.2rem;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-card p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f8f9fb 0%, #e8eef5 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 5px solid #d4af37;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+            color: #555;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, #2c5282 0%, #1e3a5f 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 58, 95, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-section h3 {
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #d4af37;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: #c19b2b;
+        }
+
+        .contact-btn.secondary {
+            background: #1e3a5f;
+        }
+
+        .contact-btn.secondary:hover {
+            background: #2c5282;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #2c5282;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e3a5f;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .confirmation-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .confirmation-card h2 {
+                font-size: 1.8rem;
+            }
+
+            .success-icon {
+                font-size: 4rem;
+            }
+
+            .download-btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .contact-buttons {
+                flex-direction: column;
+            }
+
+            .contact-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <img src="logo.svg" alt="IH Real Estate Logo" class="logo">
+            <h1>Thank You!</h1>
+            <p class="tagline">Your guide is ready to download</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="success-icon">✅</div>
+
+            <h2>Success! Your Guide is Ready</h2>
+
+            <p>Thank you for downloading your free real estate guide. I'm excited to help you on your real estate journey!</p>
+
+            <div id="guide-content">
+                <!-- Dynamic content will be inserted here based on guide type -->
+            </div>
+
+            <a href="#" id="download-button" class="download-btn">
+                📥 Download Your Guide Now
+            </a>
+
+            <div class="highlight-box">
+                <h3>What Happens Next?</h3>
+                <p>
+                    Your guide has valuable insights to help you succeed. Review it at your own pace, and when you're ready to discuss your specific situation or have any questions, I'm here to help—no pressure, just genuine support.
+                </p>
+            </div>
+
+            <div class="contact-section">
+                <h3>Ready to Take the Next Step?</h3>
+                <p style="margin-bottom: 1rem;">
+                    I'd love to hear about your goals and answer any questions you might have. Let's have a no-pressure conversation about how I can help.
+                </p>
+
+                <div class="contact-buttons">
+                    <a href="tel:6128002025" class="contact-btn">
+                        📞 Call Me: (612) 800-2025
+                    </a>
+                    <a href="mailto:harchi.isaak@gmail.com" class="contact-btn secondary">
+                        📧 Email Me
+                    </a>
+                </div>
+
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                    💬 I typically respond within 2 hours, 7 days a week
+                </p>
+            </div>
+
+            <a href="/" class="back-link">← Back to Main Page</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Isaak Harchi Real Estate. All rights reserved.</p>
+        <p>Your information is secure and will never be shared with third parties.</p>
+    </footer>
+
+    <script>
+        // Get guide type from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const guideType = urlParams.get('guide') || 'selling';
+
+        // Guide configuration
+        const guides = {
+            'selling': {
+                title: 'Complete Guide to Selling Your Home',
+                icon: '📊',
+                description: 'You now have access to proven strategies for selling your home with confidence. This guide covers everything from preparing your home for sale to negotiating offers and closing the deal.',
+                filename: 'selling_guide.pdf',
+                highlights: [
+                    'Preparing Your Home for Maximum Value',
+                    'Strategic Pricing to Attract Buyers',
+                    'Marketing That Gets Results',
+                    'Negotiating Multiple Offers'
+                ]
+            },
+            'buying': {
+                title: 'Complete Guide to Buying Your Home',
+                icon: '🏠',
+                description: 'You now have access to a comprehensive roadmap for buying your dream home. This guide walks you through every step, from getting pre-approved to closing day.',
+                filename: 'buying_guide.pdf',
+                highlights: [
+                    'Financial Preparation & Pre-Approval',
+                    'Finding the Perfect Home',
+                    'Making Competitive Offers',
+                    'Understanding Inspections & Appraisals'
+                ]
+            },
+            'inspection': {
+                title: 'Complete Home Inspection Guide',
+                icon: '🔍',
+                description: 'You now have access to expert insights on home inspections. This guide helps you understand what inspectors look for and how to make informed decisions.',
+                filename: 'inspection_guide.pdf',
+                highlights: [
+                    'What Inspectors Examine',
+                    'Critical Red Flags to Watch',
+                    'Essential Questions to Ask',
+                    'Typical Repair Cost Estimates'
+                ]
+            }
+        };
+
+        // Get guide info
+        const guide = guides[guideType] || guides['selling'];
+
+        // Update page content
+        document.getElementById('guide-content').innerHTML = `
+            <div style="margin: 2rem 0;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">${guide.icon}</div>
+                <h3 style="color: #1e3a5f; font-size: 1.5rem; margin-bottom: 1rem;">
+                    ${guide.title}
+                </h3>
+                <p style="color: #666; margin-bottom: 1.5rem;">
+                    ${guide.description}
+                </p>
+                <div style="text-align: left; max-width: 500px; margin: 0 auto;">
+                    <h4 style="color: #1e3a5f; margin-bottom: 0.5rem;">Inside Your Guide:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        ${guide.highlights.map(item => `
+                            <li style="padding: 0.5rem 0; padding-left: 1.8rem; position: relative;">
+                                <span style="position: absolute; left: 0; color: #d4af37; font-weight: bold; font-size: 1.2rem;">✓</span>
+                                ${item}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        // Update download button
+        const downloadBtn = document.getElementById('download-button');
+        downloadBtn.href = guide.filename;
+        downloadBtn.download = guide.filename;
+        downloadBtn.textContent = `📥 Download Your ${guide.icon} ${guideType.charAt(0).toUpperCase() + guideType.slice(1)} Guide`;
+
+        // Trigger automatic download after 1 second
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = guide.filename;
+            link.download = guide.filename;
+            link.click();
+        }, 1000);
+
+        // Google Ads Conversion Tracking
+        // This is where you would add your Google Ads conversion tracking code
+        // Example:
+        // gtag('event', 'conversion', {
+        //     'send_to': 'AW-XXXXXXXXX/XXXXXXXXXXXXXXX',
+        //     'value': 1.0,
+        //     'currency': 'USD',
+        //     'transaction_id': ''
+        // });
+
+        console.log(`Confirmation page loaded for ${guideType} guide`);
+    </script>
+</body>
+</html>
