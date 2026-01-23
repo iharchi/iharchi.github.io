@@ -85,6 +85,13 @@
             text-align: center;
         }
 
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
@@ -348,6 +355,11 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
             h1 {
                 font-size: 1.8rem;
             }
@@ -389,6 +401,7 @@
     <!-- Header -->
     <header>
         <div class="header-content">
+            <img src="logo.svg" alt="IH Real Estate Logo" class="logo">
             <h1>Twin Cities Real Estate Agent | Minneapolis & St. Paul Homes</h1>
             <p class="tagline">Isaak Harchi - Making real estate simple, stress-free, and personal in the Twin Cities</p>
         </div>
